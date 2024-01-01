@@ -1,6 +1,6 @@
 package javabasic;
 
-public interface ITestInterface {
+interface ITestInterface {
     void display();
 }
 
