@@ -47,3 +47,5 @@ ObjectReference.MethodName();
 - Abstract class/method: 
   - **Abstract class**: is a restricted class that _cannot be used to create objects_ (to access it, it must be inherited from another class). 
   - **Abstract method**: can only be used in an abstract class, and it _does not have a body_. The body is provided by the subclass (inherited from).
+
+- Gerneric: Generics cho phép bạn tạo các lớp, phương thức và interface có thể hoạt động với nhiều kiểu dữ liệu khác nhau mà không mất tính linh hoạt và an toàn kiểu.
