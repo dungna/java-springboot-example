@@ -3,82 +3,89 @@ package info.nguyenanhdung.spingapi.demo.controllers;
 import info.nguyenanhdung.spingapi.demo.models.ProductModel;
 import info.nguyenanhdung.spingapi.demo.dtos.ProductDTO;
 import info.nguyenanhdung.spingapi.demo.repositories.IProductRepository;
+import info.nguyenanhdung.spingapi.demo.responses.ProductResponse;
+import info.nguyenanhdung.spingapi.demo.services.IProductService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import jakarta.validation.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("${api.prefix}/product")
+@RequiredArgsConstructor
 public class ProductController {
+    private final IProductService productService;
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
     // DI = Dependency Injection
     @Autowired
     private IProductRepository IProductRepository;
-    @GetMapping("")
-    List<ProductModel> getAllProducts() {
-        return IProductRepository.findAll();
+
+    public ProductController(IProductService productService) {
+        this.productService = productService;
+    }
+
+    @PostMapping("")
+    public ResponseEntity<?> createProduct(
+            @Valid @RequestBody ProductDTO productDTO,
+            BindingResult result
+    ) {
+        try {
+            if(result.hasErrors()) {
+                List<String> errorMessages = result.getFieldErrors()
+                        .stream()
+                        .map(FieldError::getDefaultMessage)
+                        .toList();
+                return ResponseEntity.badRequest().body(errorMessages);
+            }
+            ProductModel newProduct = productService.createProduct(productDTO);
+            return ResponseEntity.ok(newProduct);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
     @GetMapping("/{id}")
-    // Let's return an object with: data, message, status
-    ResponseEntity<ProductDTO> findById(@PathVariable Long id) {
-        Optional<ProductModel> foundProduct = IProductRepository.findById(id);
-        return foundProduct.isPresent() ?
-                ResponseEntity.status(HttpStatus.OK).body(
-                        new ProductDTO("ok", "Query product successfully", foundProduct)
-                ):
-                ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ProductDTO("false", "Cannot find product with id = "+id, "")
-            );
-    }
-    @PostMapping("/insert")
-    ResponseEntity<ProductDTO> insertProduct(@RequestBody ProductModel newProductModel) {
-        // 2 products must not have the same name
-        List<ProductModel> foundProductModels = IProductRepository.findByProductName(newProductModel.getProductName().trim());
-        if(foundProductModels.size() > 0) {
-            logger.error("Product name already taken");
-            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                    new ProductDTO("failed", "Product name already taken", "")
-            );
+    public ResponseEntity<?> getProductById(
+            @PathVariable("id") Long productId
+    ) {
+        try {
+            ProductModel existingProduct = productService.getProductById(productId);
+            return ResponseEntity.ok(ProductResponse.fromProduct(existingProduct));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new ProductDTO("ok", "Insert Product successflly", IProductRepository.save(newProductModel))
-        );
-        logger.info("Insert Product successflly");
+
     }
-    @PutMapping("/{id}")
-    ResponseEntity<ProductDTO> updateProduct(@RequestBody ProductModel newProductModel, @PathVariable Long id) {
-        ProductModel updatedProductModel = IProductRepository.findById(id)
-                .map(productModel -> {
-                    productModel.setProductName(newProductModel.getProductName());
-                    productModel.setYear(newProductModel.getYear());
-                    productModel.setPrice(newProductModel.getPrice());
-                    return IProductRepository.save(productModel);
-                }).orElseGet(() -> {
-                    newProductModel.setId((id));
-                    return IProductRepository.save(newProductModel);
-                });
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new ProductDTO("ok", "Update Product successflly", updatedProductModel)
-        );
-    }
+    // Delete product
     @DeleteMapping("/{id}")
-    ResponseEntity<ProductDTO> deleteProduct(@PathVariable Long id) {
-        boolean exists = IProductRepository.existsById(id);
-        if(exists) {
-            IProductRepository.deleteById(id);
-            return ResponseEntity.status(HttpStatus.OK).body(
-              new ProductDTO("ok", "Delete product successfully", "")
-            );
+    public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
+        try {
+            productService.deleteProduct(id);
+            return ResponseEntity.ok(String.format("Product with id = %d deleted successfully", id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                new ProductDTO("failed", "Cannot find product to delete", "")
-        );
+    }
+
+    // Update product
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateProduct(
+            @PathVariable long id,
+            @RequestBody ProductDTO productDTO
+    ) {
+        try {
+            ProductModel updatedProduct = productService.updateProduct(id, productDTO);
+            return ResponseEntity.ok(updatedProduct);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }
