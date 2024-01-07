@@ -55,6 +55,11 @@ public class ProductService implements IProductService{
     }
 
     @Override
+    public Page<ProductResponse> getAllProducts(String keyword, Long categoryId, PageRequest pageRequest) {
+        return null;
+    }
+
+    @Override
     @Transactional
     public ProductModel updateProduct(long id, ProductDTO productDTO) throws Exception {
         ProductModel existingProductModel = getProductById(id);
