@@ -11,9 +11,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @RestController
 @RequestMapping("${api.prefix}/product")
 public class ProductController {
+    private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
     // DI = Dependency Injection
     @Autowired
     private IProductRepository IProductRepository;
@@ -38,6 +42,7 @@ public class ProductController {
         // 2 products must not have the same name
         List<ProductModel> foundProductModels = IProductRepository.findByProductName(newProductModel.getProductName().trim());
         if(foundProductModels.size() > 0) {
+            logger.error("Product name already taken");
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
                     new ProductDTO("failed", "Product name already taken", "")
             );
@@ -45,6 +50,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ProductDTO("ok", "Insert Product successflly", IProductRepository.save(newProductModel))
         );
+        logger.info("Insert Product successflly");
     }
     @PutMapping("/{id}")
     ResponseEntity<ProductDTO> updateProduct(@RequestBody ProductModel newProductModel, @PathVariable Long id) {
