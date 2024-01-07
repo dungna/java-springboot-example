@@ -5,16 +5,14 @@ import info.nguyenanhdung.spingapi.demo.dtos.ProductDTO;
 import info.nguyenanhdung.spingapi.demo.repositories.IProductRepository;
 import info.nguyenanhdung.spingapi.demo.responses.ProductResponse;
 import info.nguyenanhdung.spingapi.demo.services.IProductService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import jakarta.validation.*;
-
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
