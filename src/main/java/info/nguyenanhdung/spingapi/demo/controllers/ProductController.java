@@ -1,7 +1,7 @@
 package info.nguyenanhdung.spingapi.demo.controllers;
 
-import info.nguyenanhdung.spingapi.demo.models.ProductModel;
-import info.nguyenanhdung.spingapi.demo.models.ResponseObjectModel;
+import info.nguyenanhdung.spingapi.demo.models.ProductDTO;
+import info.nguyenanhdung.spingapi.demo.dtos.ResponseObjectModel;
 import info.nguyenanhdung.spingapi.demo.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,22 +12,19 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "/api/v1/Productions")
+@RequestMapping("${api.prefix}/product")
 public class ProductController {
     // DI = Dependency Injection
     @Autowired
-    private ProductRepository repository;
-
-    @GetMapping("/getAllProducts")
-    List<ProductModel> getAllProducts() {
-        return repository.findAll();
+    private ProductRepository productRepository;
+    @GetMapping("")
+    List<ProductDTO> getAllProducts() {
+        return productRepository.findAll();
     }
-
-    // Get detail product
     @GetMapping("/{id}")
     // Let's return an object with: data, message, status
     ResponseEntity<ResponseObjectModel> findById(@PathVariable Long id) {
-        Optional<ProductModel> foundProduct = repository.findById(id);
+        Optional<ProductDTO> foundProduct = productRepository.findById(id);
         return foundProduct.isPresent() ?
                 ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObjectModel("ok", "Query product successfully", foundProduct)
@@ -36,46 +33,40 @@ public class ProductController {
                     new ResponseObjectModel("false", "Cannot find product with id = "+id, "")
             );
     }
-
-    // Insert data
-    //Postman: Raw, JSON
     @PostMapping("/insert")
-    ResponseEntity<ResponseObjectModel> insertProduct(@RequestBody ProductModel newProductModel) {
+    ResponseEntity<ResponseObjectModel> insertProduct(@RequestBody ProductDTO newProductDTO) {
         // 2 products must not have the same name
-        List<ProductModel> foundProductModels = repository.findByProductName(newProductModel.getProductName().trim());
-        if(foundProductModels.size() > 0) {
+        List<ProductDTO> foundProductDTOS = productRepository.findByProductName(newProductDTO.getProductName().trim());
+        if(foundProductDTOS.size() > 0) {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
                     new ResponseObjectModel("failed", "Product name already taken", "")
             );
         }
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObjectModel("ok", "Insert Product successflly", repository.save(newProductModel))
+                new ResponseObjectModel("ok", "Insert Product successflly", productRepository.save(newProductDTO))
         );
     }
-    // Update, upsert = update if found, otherwise insert
-    @PutMapping("/{id")
-    ResponseEntity<ResponseObjectModel> updateProduct(@RequestBody ProductModel newProductModel, @PathVariable Long id) {
-        ProductModel updatedProductModel = repository.findById(id)
-                .map(productModel -> {
-                    productModel.setProductName(newProductModel.getProductName());
-                    productModel.setYear(newProductModel.getYear());
-                    productModel.setPrice(newProductModel.getPrice());
-                    return repository.save(productModel);
+    @PutMapping("/{id}")
+    ResponseEntity<ResponseObjectModel> updateProduct(@RequestBody ProductDTO newProductDTO, @PathVariable Long id) {
+        ProductDTO updatedProductDTO = productRepository.findById(id)
+                .map(productDTO -> {
+                    productDTO.setProductName(newProductDTO.getProductName());
+                    productDTO.setYear(newProductDTO.getYear());
+                    productDTO.setPrice(newProductDTO.getPrice());
+                    return productRepository.save(productDTO);
                 }).orElseGet(() -> {
-                    newProductModel.setId((id));
-                    return repository.save(newProductModel);
+                    newProductDTO.setId((id));
+                    return productRepository.save(newProductDTO);
                 });
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObjectModel("ok", "Update Product successflly", updatedProductModel)
+                new ResponseObjectModel("ok", "Update Product successflly", updatedProductDTO)
         );
     }
-
-    // Delete a Product => DELETE method
     @DeleteMapping("/{id}")
     ResponseEntity<ResponseObjectModel> deleteProduct(@PathVariable Long id) {
-        boolean exists = repository.existsById(id);
+        boolean exists = productRepository.existsById(id);
         if(exists) {
-            repository.deleteById(id);
+            productRepository.deleteById(id);
             return ResponseEntity.status(HttpStatus.OK).body(
               new ResponseObjectModel("ok", "Delete product successfully", "")
             );

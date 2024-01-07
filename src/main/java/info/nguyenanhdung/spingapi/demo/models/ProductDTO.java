@@ -7,7 +7,7 @@ import java.util.Objects;
 // POJO = Plain Object Java Object
 @Entity
 @Table(name = "tblProduct")
-public class ProductModel {
+public class ProductDTO {
     // this is "primary key"
     @Id
 //    @GeneratedValue(strategy = GenerationType.AUTO) // auto-increment
@@ -29,14 +29,14 @@ public class ProductModel {
     private String url;
 
     // default contructor
-    public ProductModel() {}
+    public ProductDTO() {}
     // calculated field = transient
     @Transient
     private int age; // age is calculated from "year"
     public int getAge() {
         return Calendar.getInstance().get(Calendar.YEAR) - year;
     }
-    public ProductModel(String productName, int year, Double price, String url) {
+    public ProductDTO(String productName, int year, Double price, String url) {
         this.productName = productName;
         this.year = year;
         this.price = price;
@@ -57,35 +57,27 @@ public class ProductModel {
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
-
     public String getProductName() {
         return productName;
     }
-
     public void setProductName(String productName) {
         this.productName = productName;
     }
-
     public int getYear() {
         return year;
     }
-
     public void setYear(int year) {
         this.year = year;
     }
-
     public Double getPrice() {
         return price;
     }
-
     public void setPrice(Double price) {
         this.price = price;
     }
-
     public String getUrl() {
         return url;
     }
@@ -98,8 +90,8 @@ public class ProductModel {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ProductModel productModel = (ProductModel) o;
-        return year == productModel.year && age == productModel.age && Objects.equals(id, productModel.id) && Objects.equals(productName, productModel.productName) && Objects.equals(price, productModel.price) && Objects.equals(url, productModel.url);
+        ProductDTO productDTO = (ProductDTO) o;
+        return year == productDTO.year && age == productDTO.age && Objects.equals(id, productDTO.id) && Objects.equals(productName, productDTO.productName) && Objects.equals(price, productDTO.price) && Objects.equals(url, productDTO.url);
     }
 
     @Override

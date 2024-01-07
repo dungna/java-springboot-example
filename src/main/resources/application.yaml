@@ -22,3 +22,5 @@ spring:
       hibernate:
       dialer: org.hibernate.dialect.MySQL8Dialect
       format_sql: true
+api:
+  prefix: api/v1

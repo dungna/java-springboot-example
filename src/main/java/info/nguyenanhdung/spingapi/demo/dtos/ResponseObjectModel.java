@@ -1,4 +1,4 @@
-package info.nguyenanhdung.spingapi.demo.models;
+package info.nguyenanhdung.spingapi.demo.dtos;
 
 public class ResponseObjectModel {
     private String status;
