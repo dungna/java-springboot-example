@@ -7,7 +7,7 @@ import java.util.Objects;
 // POJO = Plain Object Java Object
 @Entity
 @Table(name = "tblProduct")
-public class Product {
+public class ProductModel {
     // this is "primary key"
     @Id
 //    @GeneratedValue(strategy = GenerationType.AUTO) // auto-increment
@@ -29,14 +29,14 @@ public class Product {
     private String url;
 
     // default contructor
-    public Product() {}
+    public ProductModel() {}
     // calculated field = transient
     @Transient
     private int age; // age is calculated from "year"
     public int getAge() {
         return Calendar.getInstance().get(Calendar.YEAR) - year;
     }
-    public Product(String productName, int year, Double price, String url) {
+    public ProductModel(String productName, int year, Double price, String url) {
         this.productName = productName;
         this.year = year;
         this.price = price;
@@ -98,8 +98,8 @@ public class Product {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
-        return year == product.year && age == product.age && Objects.equals(id, product.id) && Objects.equals(productName, product.productName) && Objects.equals(price, product.price) && Objects.equals(url, product.url);
+        ProductModel productModel = (ProductModel) o;
+        return year == productModel.year && age == productModel.age && Objects.equals(id, productModel.id) && Objects.equals(productName, productModel.productName) && Objects.equals(price, productModel.price) && Objects.equals(url, productModel.url);
     }
 
     @Override

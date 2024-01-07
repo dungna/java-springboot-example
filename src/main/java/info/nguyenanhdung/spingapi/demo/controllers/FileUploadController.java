@@ -1,6 +1,6 @@
 package info.nguyenanhdung.spingapi.demo.controllers;
 
-import info.nguyenanhdung.spingapi.demo.models.ResponseObject;
+import info.nguyenanhdung.spingapi.demo.models.ResponseObjectModel;
 import info.nguyenanhdung.spingapi.demo.services.IStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,9 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
-
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(path = "/api/v1/FileUpload")
@@ -20,16 +17,16 @@ public class FileUploadController {
     @Autowired
     private IStorageService storageService;
     @PostMapping("")
-    public ResponseEntity<ResponseObject> uploadFile(@RequestParam("file")MultipartFile file) {
+    public ResponseEntity<ResponseObjectModel> uploadFile(@RequestParam("file")MultipartFile file) {
         try {
             //save files to a folder => use
             String generatedFileName = storageService.storeFile(file);
             return ResponseEntity.status(HttpStatus.OK).body(
-                 new ResponseObject("ok","upload file successfully", generatedFileName)
+                 new ResponseObjectModel("ok","upload file successfully", generatedFileName)
             );
         } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                 new ResponseObject("failed",exception.getMessage(), "")
+                 new ResponseObjectModel("failed",exception.getMessage(), "")
             );
         }
     }

@@ -1,6 +1,5 @@
 package info.nguyenanhdung.spingapi.demo.database;
 
-import info.nguyenanhdung.spingapi.demo.models.Product;
 import info.nguyenanhdung.spingapi.demo.repositories.ProductRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

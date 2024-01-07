@@ -1,7 +1,7 @@
 package info.nguyenanhdung.spingapi.demo.controllers;
 
-import info.nguyenanhdung.spingapi.demo.models.Product;
-import info.nguyenanhdung.spingapi.demo.models.ResponseObject;
+import info.nguyenanhdung.spingapi.demo.models.ProductModel;
+import info.nguyenanhdung.spingapi.demo.models.ResponseObjectModel;
 import info.nguyenanhdung.spingapi.demo.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,69 +19,69 @@ public class ProductController {
     private ProductRepository repository;
 
     @GetMapping("/getAllProducts")
-    List<Product> getAllProducts() {
+    List<ProductModel> getAllProducts() {
         return repository.findAll();
     }
 
     // Get detail product
     @GetMapping("/{id}")
     // Let's return an object with: data, message, status
-    ResponseEntity<ResponseObject> findById(@PathVariable Long id) {
-        Optional<Product> foundProduct = repository.findById(id);
+    ResponseEntity<ResponseObjectModel> findById(@PathVariable Long id) {
+        Optional<ProductModel> foundProduct = repository.findById(id);
         return foundProduct.isPresent() ?
                 ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject("ok", "Query product successfully", foundProduct)
+                        new ResponseObjectModel("ok", "Query product successfully", foundProduct)
                 ):
                 ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("false", "Cannot find product with id = "+id, "")
+                    new ResponseObjectModel("false", "Cannot find product with id = "+id, "")
             );
     }
 
     // Insert data
     //Postman: Raw, JSON
     @PostMapping("/insert")
-    ResponseEntity<ResponseObject> insertProduct(@RequestBody Product newProduct) {
+    ResponseEntity<ResponseObjectModel> insertProduct(@RequestBody ProductModel newProductModel) {
         // 2 products must not have the same name
-        List<Product> foundProducts = repository.findByProductName(newProduct.getProductName().trim());
-        if(foundProducts.size() > 0) {
+        List<ProductModel> foundProductModels = repository.findByProductName(newProductModel.getProductName().trim());
+        if(foundProductModels.size() > 0) {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                    new ResponseObject("failed", "Product name already taken", "")
+                    new ResponseObjectModel("failed", "Product name already taken", "")
             );
         }
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Insert Product successflly", repository.save(newProduct))
+                new ResponseObjectModel("ok", "Insert Product successflly", repository.save(newProductModel))
         );
     }
     // Update, upsert = update if found, otherwise insert
     @PutMapping("/{id")
-    ResponseEntity<ResponseObject> updateProduct(@RequestBody Product newProduct, @PathVariable Long id) {
-        Product updatedProduct = repository.findById(id)
-                .map(product -> {
-                    product.setProductName(newProduct.getProductName());
-                    product.setYear(newProduct.getYear());
-                    product.setPrice(newProduct.getPrice());
-                    return repository.save(product);
+    ResponseEntity<ResponseObjectModel> updateProduct(@RequestBody ProductModel newProductModel, @PathVariable Long id) {
+        ProductModel updatedProductModel = repository.findById(id)
+                .map(productModel -> {
+                    productModel.setProductName(newProductModel.getProductName());
+                    productModel.setYear(newProductModel.getYear());
+                    productModel.setPrice(newProductModel.getPrice());
+                    return repository.save(productModel);
                 }).orElseGet(() -> {
-                    newProduct.setId((id));
-                    return repository.save(newProduct);
+                    newProductModel.setId((id));
+                    return repository.save(newProductModel);
                 });
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Update Product successflly", updatedProduct)
+                new ResponseObjectModel("ok", "Update Product successflly", updatedProductModel)
         );
     }
 
     // Delete a Product => DELETE method
     @DeleteMapping("/{id}")
-    ResponseEntity<ResponseObject> deleteProduct(@PathVariable Long id) {
+    ResponseEntity<ResponseObjectModel> deleteProduct(@PathVariable Long id) {
         boolean exists = repository.existsById(id);
         if(exists) {
             repository.deleteById(id);
             return ResponseEntity.status(HttpStatus.OK).body(
-              new ResponseObject("ok", "Delete product successfully", "")
+              new ResponseObjectModel("ok", "Delete product successfully", "")
             );
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                new ResponseObject("failed", "Cannot find product to delete", "")
+                new ResponseObjectModel("failed", "Cannot find product to delete", "")
         );
     }
 }
