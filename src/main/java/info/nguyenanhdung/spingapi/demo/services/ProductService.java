@@ -21,11 +21,6 @@ public class ProductService implements IProductService{
     private final IProductRepository productRepository;
     private final ICategoryRepository categoryRepository;
 
-    public ProductService(IProductRepository productRepository, ICategoryRepository categoryRepository) {
-        this.productRepository = productRepository;
-        this.categoryRepository = categoryRepository;
-    }
-
     @Override
     @Transactional
     public ProductModel createProduct(ProductDTO productDTO) throws DataNotFoundException {
