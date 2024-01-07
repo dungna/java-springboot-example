@@ -2,25 +2,34 @@ package info.nguyenanhdung.spingapi.demo.services;
 
 import info.nguyenanhdung.spingapi.demo.dtos.ProductDTO;
 import info.nguyenanhdung.spingapi.demo.exceptions.DataNotFoundException;
-import info.nguyenanhdung.spingapi.demo.exceptions.InvalidParamException;
+import info.nguyenanhdung.spingapi.demo.models.CategoryModel;
 import info.nguyenanhdung.spingapi.demo.models.ProductModel;
 import info.nguyenanhdung.spingapi.demo.repositories.ICategoryRepository;
 import info.nguyenanhdung.spingapi.demo.repositories.IProductRepository;
+import info.nguyenanhdung.spingapi.demo.responses.ProductResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class ProductService implements IProductService{
     private final IProductRepository productRepository;
     private final ICategoryRepository categoryRepository;
+
+    public ProductService(IProductRepository productRepository, ICategoryRepository categoryRepository) {
+        this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
+    }
+
     @Override
     @Transactional
     public ProductModel createProduct(ProductDTO productDTO) throws DataNotFoundException {
-        Category  existsCategory = categoryRepository.
+        CategoryModel existsCategory = categoryRepository.
                 findById(productDTO.getCategoryId)
                 .orElseThrow(() ->
                         new DataNotFoundException("Cannot find category with id: " + productDTO.getCategoryId()));
@@ -44,6 +53,11 @@ public class ProductService implements IProductService{
     }
 
     @Override
+    public Page<ProductResponse> getAllProducts(PageRequest pageRequest) {
+        return null;
+    }
+
+    @Override
     public Page<ProductResponse> getAllProducts(String keyword,
                                                 Long categoryId, PageRequest pageRequest) {
         // Lấy danh sách sản phẩm theo trang (page), giới hạn (limit), và categoryId (nếu có)
@@ -57,7 +71,7 @@ public class ProductService implements IProductService{
     public ProductModel updateProduct(long id, ProductDTO productDTO) throws Exception {
         ProductModel existingProductModel = getProductById(id);
         if(existingProductModel != null) {
-            Category existingCategory = categoryRepository
+            CategoryModel existingCategory = categoryRepository
                     .findById(productDTO.getCategoryId())
                     .orElseThrow(() ->
                             new DataNotFoundException(
