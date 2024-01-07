@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("${api.prefix}/product")
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class ProductController {
     private final IProductService productService;
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
