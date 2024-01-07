@@ -40,7 +40,7 @@ public class CategoryService implements ICategoryService{
 
     @Override
     public CategoryModel updateCategory(Long categoryId, CategoryDTO categoryDTO) {
-        CategoryModel existingCategoryModel = getCategoryById(id);
+        CategoryModel existingCategoryModel = getCategoryById(categoryId);
         existingCategoryModel.setName(categoryDTO.getName());
         categoryRepository.save(existingCategoryModel);
         return existingCategoryModel;
@@ -48,6 +48,6 @@ public class CategoryService implements ICategoryService{
 
     @Override
     public void deleteCategory(Long id) {
-        return categoryRepository.deleteById(id);
+        categoryRepository.deleteById(id);
     }
 }

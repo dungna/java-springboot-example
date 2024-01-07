@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProductResponse extends BaseResponse{
+public class ProductResponse extends BaseResponse {
     private String name;
     private Float price;
     private String thumbnail;
