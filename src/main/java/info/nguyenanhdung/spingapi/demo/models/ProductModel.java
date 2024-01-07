@@ -7,10 +7,8 @@ import java.util.Objects;
 // POJO = Plain Object Java Object
 @Entity
 @Table(name = "tblProduct")
-public class ProductDTO {
-    // this is "primary key"
+public class ProductModel {
     @Id
-//    @GeneratedValue(strategy = GenerationType.AUTO) // auto-increment
     @SequenceGenerator(
             name = "product_sequence",
             sequenceName = "product_sequence",
@@ -29,14 +27,14 @@ public class ProductDTO {
     private String url;
 
     // default contructor
-    public ProductDTO() {}
+    public ProductModel() {}
     // calculated field = transient
     @Transient
     private int age; // age is calculated from "year"
     public int getAge() {
         return Calendar.getInstance().get(Calendar.YEAR) - year;
     }
-    public ProductDTO(String productName, int year, Double price, String url) {
+    public ProductModel(String productName, int year, Double price, String url) {
         this.productName = productName;
         this.year = year;
         this.price = price;
@@ -90,8 +88,8 @@ public class ProductDTO {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ProductDTO productDTO = (ProductDTO) o;
-        return year == productDTO.year && age == productDTO.age && Objects.equals(id, productDTO.id) && Objects.equals(productName, productDTO.productName) && Objects.equals(price, productDTO.price) && Objects.equals(url, productDTO.url);
+        ProductModel productModel = (ProductModel) o;
+        return year == productModel.year && age == productModel.age && Objects.equals(id, productModel.id) && Objects.equals(productName, productModel.productName) && Objects.equals(price, productModel.price) && Objects.equals(url, productModel.url);
     }
 
     @Override
