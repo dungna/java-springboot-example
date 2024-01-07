@@ -1,7 +1,7 @@
 package info.nguyenanhdung.spingapi.demo.services;
 
-import info.nguyenanhdung.shopapp.dtos.CategoryDTO;
-import info.nguyenanhdung.shopapp.models.CategoryModel;
+import info.nguyenanhdung.spingapi.demo.dtos.CategoryDTO;
+import info.nguyenanhdung.spingapi.demo.models.CategoryModel;
 
 import java.util.List;
 

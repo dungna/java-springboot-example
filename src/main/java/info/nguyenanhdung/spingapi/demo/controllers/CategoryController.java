@@ -49,8 +49,6 @@ public class CategoryController {
         List<CategoryModel> categories = categoryService.getAllCategories();
         return ResponseEntity.ok(categories);
     }
-
-    // Put route
     @PutMapping("/{id}")
     public ResponseEntity<String> updateCategory(
             @PathVariable Long id,
@@ -59,8 +57,6 @@ public class CategoryController {
         categoryService.updateCategory(id, categoryDTO);
         return ResponseEntity.ok("Update category successfully");
     }
-
-    // Delete route
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
