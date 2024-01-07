@@ -1,0 +1,24 @@
+# Server
+server:
+  port: 8088
+
+# Logging
+logging:
+  level.root: info
+  file: myapp.log
+
+# Database
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/springboot_test_db?useSSL=false&serverTimezone=UTC
+    username: springboot_test_u
+    password: SpingBootDbTest
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+      dialer: org.hibernate.dialect.MySQL8Dialect
+      format_sql: true
