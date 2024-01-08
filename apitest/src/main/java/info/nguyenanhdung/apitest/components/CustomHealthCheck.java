@@ -13,9 +13,10 @@ public class CustomHealthCheck implements HealthIndicator {
         try {
             // Implement your custom health check logic here
             String computerName = InetAddress.getLocalHost().getHostName();
-            return Health.up().build();
+            return Health.up().withDetail("ComputerName ", computerName).build();
         } catch (Exception e) {
-            return Health.down().build();
+            return Health.down()
+                    .withDetail("Error: ", e.getMessage()).build();
         }
     }
 }
